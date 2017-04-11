@@ -1,0 +1,43 @@
+import datetime
+from pandas_datareader import data, wb # pip install pandas-datareader
+import numpy as np
+import matplotlib.pyplot as plt
+
+# read data
+# start = datetime.date(2012, 3, 25)
+# end = datetime.date(2017, 3, 25)
+
+
+start = datetime.date(2016, 3, 25)
+end = datetime.date(2017, 3, 25)
+
+df = data.DataReader('AAPL', 'yahoo', start, end)
+print("print 1:")
+print(df.head())
+# X=np.array(df["Adj Close"])
+
+high_max=df["High"].max()
+low_min=df["Low"].min()
+val_range=high_max-low_min
+df['Stoch_K'] = (df["Adj Close"]- low_min) / val_range
+
+close_max = df["Adj Close"].max()
+close_min = df["Adj Close"].min()
+close_range = close_max-close_min
+# df["AC_CMin"]=df["Adj Close"]- close_min
+df["Stoch_K_Close"] = (df["Adj Close"] - close_min) / close_range
+
+df['Rise'] = df["Adj Close"] > df["Adj Close"].shift(1)  # kolla shift
+df['Mom 1'] = df["Adj Close"] - df["Adj Close"].shift(1)
+# df['Mom 4'] = df["Adj Close"] - df["Adj Close"].shift(4)
+
+df["ROC 1"]=df["Adj Close"]/df["Adj Close"].shift(1)
+# df["ROC 4"]=df["Adj Close"]/df["Adj Close"].shift(4)
+
+# df["3_day_mean"] = df["Adj Close"].rolling(3).mean()
+df["5_day_mean"] = df["Adj Close"].rolling(5).mean()  # kolla rolling
+df["10_day_mean"] = df["Adj Close"].rolling(10).mean()
+
+
+
+
